@@ -2,6 +2,7 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import Button from "@/components/Button";
+import {RiMenuLine} from "react-icons/ri";
 
 
 
@@ -10,11 +11,6 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const router = useRouter();
 
-    const handleClick = (event: MouseEvent) => {
-        if (isOpen && (event.target as Element).id !== 'hamburger') {
-            setIsOpen(false);
-        }
-    }
 
     useEffect(() => {
 
@@ -22,17 +18,16 @@ const Navbar = () => {
             if (isOpen && (event.target as Element).id !== 'hamburger') {
                 setIsOpen(false);
             }
+            if (isOpen && (event.target as Element).id === 'hamburger') {
+                setIsOpen(false);
+            }
         }
 
-        window.addEventListener('mousedown', handleClick);
+        document.addEventListener('mousedown', handleClick);
         return () => {
-            window.removeEventListener('mousedown', handleClick);
+            document.removeEventListener('mousedown', handleClick);
         }
     }, [isOpen])
-
-    const toggleNavbar = () => {
-        setIsOpen(!isOpen);
-    }
 
     const getActiveClass = (path: string): string => {
         if (router.pathname === path) {
@@ -56,8 +51,9 @@ const Navbar = () => {
                 <Link href='/contact'>
                     <Button className='hidden md:block button'>Contact Us</Button>
                 </Link>
-                <button id='hamburger' onClick={toggleNavbar} className='md:hidden'>
-                    HAM
+                <button id='hamburger'  className='md:hidden'>
+                    {!isOpen && <RiMenuLine onClick={()=>setIsOpen(true)} className='text-2xl'/>}
+                    {isOpen && <RiMenuLine onClick={() => setIsOpen(false)} className='text-2xl'/>}
                 </button>
             </nav>
             <ul className={`w-full bg-violet-950 text-gray-300 absolute flex flex-col md:hidden gap-5 font-medium px-10 ${isOpen ? 'max-h-[200px] py-5 opacity-100' : 'max-h-0 opacity-20'} overflow-hidden transition-all duration-300`}>
